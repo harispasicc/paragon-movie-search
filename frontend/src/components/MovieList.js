@@ -1,35 +1,50 @@
 import React from "react";
 import { AiFillHeart } from "react-icons/ai";
+import { AiOutlineHeart } from "react-icons/ai";
 
 const MovieList = props => {
-  const handleClick = movie => {
-    props.handleFavouritesClick(movie);
-  };
-
   const FavouriteComponent = props.favouriteComponent;
+  const isFavourite = props.isFavourite;
+  const isFavouritesList = props.isFavouritesList || false;
+
+  if (!props.movies || props.movies.length === 0) {
+    return null;
+  }
 
   return (
     <div className="element">
-      {props.movies.map((movie, index) => (
-        <div key={index} className="element-div">
-          <img src={movie.i.imageUrl} alt="movie" className="movie-img" />
-          <p className="title">{movie.l}</p>
-          <button className="details" onClick={() => props.handleOpenModal()}>
-            Details
-          </button>
-          <div>
-            <p
-              onClick={() => props.handleFavouritesClick(movie)}
-              className="hearth-active"
-            >
-              <AiFillHeart />
-            </p>
-            <div className="overlay ">
-              <FavouriteComponent />
+      {props.movies
+        .filter(movie => movie && movie.i && movie.i.imageUrl)
+        .map((movie, index) => {
+          const isInFavourites = isFavouritesList || (isFavourite ? isFavourite(movie) : false);
+          
+          return (
+            <div key={index} className="element-div">
+              <img 
+                src={movie.i?.imageUrl || 'placeholder.png'} 
+                alt={movie.l || 'movie'} 
+                className="movie-img" 
+              />
+              <p className="title">{movie.l}</p>
+              {props.handleOpenModal && (
+                <button className="details" onClick={() => props.handleOpenModal(movie)}>
+                  Details
+                </button>
+              )}
+              <div>
+                <p
+                  onClick={() => props.handleFavouritesClick(movie)}
+                  className={isInFavourites ? "hearth-active" : "hearth"}
+                >
+                  {isInFavourites ? <AiFillHeart /> : <AiOutlineHeart />}
+                </p>
+                <div className="overlay ">
+                  <FavouriteComponent />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
+          );
+        })}
     </div>
   );
 };

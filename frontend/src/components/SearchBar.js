@@ -6,7 +6,7 @@ const SearchBar = props => {
       <div className="search-wrapper">
         <input
           className="form-control"
-          value={props.value}
+          value={props.searchValue}
           onChange={event => props.setSearchValue(event.target.value)}
           placeholder="Type to search..."
         />
